@@ -13,30 +13,39 @@ namespace Proxy.Tests
         public void SetUp()
         {
             _server = new HttpStubServer(_baseAddress);
-            _client = new HttpClient();
+            _client = new HttpClient(_handler = new HttpClientHandler
+            {
+                Proxy = new WebProxy(_proxyAddress, false)
+            });
         }
 
         [TearDown]
         public void TearDown()
         {
-            _client.Dispose();
-            _server.Dispose();
+            _response?.Dispose();
+            _client?.Dispose();
+            _handler?.Dispose();
+            _server?.Dispose();
         }
 
+        private readonly Uri _proxyAddress = new Uri($"http://{Environment.MachineName}:8888");
+        private readonly Uri _baseAddress = new Uri($"http://{Environment.MachineName}:9000");
+
         private HttpStubServer _server;
+        private HttpClientHandler _handler;
         private HttpClient _client;
-        private readonly Uri _baseAddress = new Uri("http://localhost:9000");
+        private HttpResponseMessage _response;
 
         [Test]
         public void it_talks_to_server()
         {
             _server
                 .When(message => true)
-                .Return(() => new HttpResponseMessage(HttpStatusCode.OK));
+                .Return(() => new HttpResponseMessage(HttpStatusCode.Created));
 
-            var response = _client.SendAsync(new HttpRequestMessage(HttpMethod.Get, _baseAddress)).GetAwaiter().GetResult();
+            _response = _client.SendAsync(new HttpRequestMessage(HttpMethod.Get, _baseAddress)).GetAwaiter().GetResult();
 
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(_response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         }
     }
 }
