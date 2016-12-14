@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using NUnit.Framework;
 using StubServer.Http;
 
@@ -12,11 +14,11 @@ namespace Proxy.Tests
         [SetUp]
         public void SetUp()
         {
-            _proxy = new PassThroughProxy(8889, $"127.0.0.1", 9000);
-            _server = new HttpStubServer(_baseAddress);
+            _proxy = new PassThroughProxy(ProxyPort, _proxyIpAddress, ServerPort);
+            _server = new HttpStubServer(_serverBaseAddress);
             _client = new HttpClient(_handler = new HttpClientHandler
             {
-                Proxy = new WebProxy(_proxyAddress, false)
+                Proxy = new WebProxy(_proxyBaseAddress, false)
             });
         }
 
@@ -30,14 +32,21 @@ namespace Proxy.Tests
             _proxy?.Dispose();
         }
 
-        private readonly Uri _proxyAddress = new Uri($"http://{Environment.MachineName}:8889");
-        private readonly Uri _baseAddress = new Uri($"http://{Environment.MachineName}:9000");
+        private static readonly string MachineName = Environment.MachineName;
 
+        private const int ServerPort = 9000;
+        private const int ProxyPort = 8889;
+
+        private readonly Uri _serverBaseAddress = new Uri($"http://{MachineName}:{ServerPort}");
+        private readonly Uri _proxyBaseAddress = new Uri($"http://{MachineName}:{ProxyPort}");
+
+        private readonly string _proxyIpAddress = Dns.GetHostAddresses(MachineName).First(address => address.AddressFamily == AddressFamily.InterNetwork).ToString();
+
+        private PassThroughProxy _proxy;
         private HttpStubServer _server;
         private HttpClientHandler _handler;
         private HttpClient _client;
         private HttpResponseMessage _response;
-        private PassThroughProxy _proxy;
 
         [Test]
         public void it_talks_to_server()
@@ -46,7 +55,7 @@ namespace Proxy.Tests
                 .When(message => true)
                 .Return(() => new HttpResponseMessage(HttpStatusCode.Created));
 
-            _response = _client.SendAsync(new HttpRequestMessage(HttpMethod.Get, _baseAddress)).GetAwaiter().GetResult();
+            _response = _client.SendAsync(new HttpRequestMessage(HttpMethod.Get, _serverBaseAddress)).GetAwaiter().GetResult();
 
             Assert.That(_response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         }

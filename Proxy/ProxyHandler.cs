@@ -14,11 +14,7 @@ namespace Proxy
         {
             using (var target = new TcpClient())
             {
-                Console.WriteLine("Connecting to target.");
-
                 await target.ConnectAsync(hostname, port);
-
-                Console.WriteLine("Connected to target.");
 
                 await Task.WhenAll(
                     Proxy(target, client, token),
@@ -28,8 +24,6 @@ namespace Proxy
 
         private static async Task Proxy(TcpClient source, TcpClient destination, CancellationToken token)
         {
-            Console.WriteLine("Creating proxy channel.");
-
             var buffer = new byte[BufferSize];
 
             using (var sourceStream = source.GetStream())

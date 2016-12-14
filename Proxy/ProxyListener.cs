@@ -29,11 +29,7 @@ namespace Proxy
         {
             while (!token.IsCancellationRequested)
             {
-                Console.WriteLine("Listening for new clients.");
-
                 var tcpClient = await listener.AcceptTcpClientAsync();
-
-                Console.WriteLine("New client connected.");
 
                 if (tcpClient != null)
                 {
