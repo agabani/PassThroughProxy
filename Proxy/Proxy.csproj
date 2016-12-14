@@ -39,6 +39,8 @@
     <Compile Include="PassThroughProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProxyHandler.cs" />
+    <Compile Include="ProxyListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
