@@ -37,6 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="MultiHost\HttpHeader.cs" />
+    <Compile Include="MultiHost\HttpHeaderStream.cs" />
     <Compile Include="MultiHost\ProxyHandler.cs" />
     <Compile Include="MultiHost\StreamFactory.cs" />
     <Compile Include="PassThroughProxy.cs" />
