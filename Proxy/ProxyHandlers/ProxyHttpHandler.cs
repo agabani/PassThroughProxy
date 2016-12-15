@@ -20,37 +20,47 @@ namespace Proxy.ProxyHandlers
             NetworkStream hostStream = null;
             TcpOneWayTunnel oneWayTunnel = null;
 
-            var buffer = new byte[BufferSize];
-            int bytesRead;
-
-            do
+            try
             {
-                header = await GetHeader(header, clientStream);
+                var buffer = new byte[BufferSize];
+                int bytesRead;
 
-                if (header == null)
+                do
                 {
-                    return;
-                }
+                    header = await GetHeader(header, clientStream);
 
-                if (IsNewHost(currentAddress, header.Host))
-                {
-                    TerminateHost(oneWayTunnel, hostStream, host);
+                    if (header == null)
+                    {
+                        return;
+                    }
 
-                    host = await ConnectTo(header.Host);
-                    hostStream = host.GetStream();
-                    oneWayTunnel = Tunnel(hostStream, clientStream);
+                    if (IsNewHost(currentAddress, header.Host))
+                    {
+                        TerminateHost(oneWayTunnel, hostStream, host);
 
-                    currentAddress = header.Host;
-                }
+                        host = await ConnectTo(header.Host);
+                        hostStream = host.GetStream();
+                        oneWayTunnel = Tunnel(hostStream, clientStream);
 
-                bytesRead = await ForwardHeader(header, hostStream);
+                        currentAddress = header.Host;
+                    }
 
-                if (HasBody(header))
-                {
-                    bytesRead = await ForwardBody(clientStream, hostStream, header.ContentLength, buffer);
-                }
-                header = null;
-            } while (bytesRead > 0);
+                    bytesRead = await ForwardHeader(header, hostStream);
+
+                    if (HasBody(header))
+                    {
+                        bytesRead = await ForwardBody(clientStream, hostStream, header.ContentLength, buffer);
+                    }
+                    header = null;
+                } while (bytesRead > 0);
+            }
+            catch (SocketException)
+            {
+            }
+            finally
+            {
+                TerminateHost(oneWayTunnel, hostStream, host);
+            }
         }
 
         private static async Task<HttpHeader> GetHeader(HttpHeader header, NetworkStream stream)

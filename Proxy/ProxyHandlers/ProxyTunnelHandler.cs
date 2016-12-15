@@ -11,13 +11,19 @@ namespace Proxy.ProxyHandlers
     {
         public async Task Run(HttpHeader httpHeader, NetworkStream clientStream)
         {
-            using (var host = await CreateHost(httpHeader))
-            using (var hostStream = host.GetStream())
-            using (var tunnel = new TcpTwoWayTunnel(clientStream, hostStream))
+            try
             {
-                var task = tunnel.Run();
-                await SendConnectionEstablised(clientStream);
-                await task;
+                using (var host = await CreateHost(httpHeader))
+                using (var hostStream = host.GetStream())
+                using (var tunnel = new TcpTwoWayTunnel(clientStream, hostStream))
+                {
+                    var task = tunnel.Run();
+                    await SendConnectionEstablised(clientStream);
+                    await task;
+                }
+            }
+            catch (SocketException)
+            {
             }
         }
 

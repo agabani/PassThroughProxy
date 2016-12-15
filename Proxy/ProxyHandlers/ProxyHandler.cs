@@ -9,25 +9,31 @@ namespace Proxy.ProxyHandlers
     {
         public async Task Run(TcpClient client)
         {
-            using (client)
-            using (var clientStream = client.GetStream())
+            try
             {
-                var httpHeader = await new HttpHeaderStream()
-                    .GetHeader(clientStream, CancellationToken.None);
+                using (client)
+                using (var clientStream = client.GetStream())
+                {
+                    var httpHeader = await new HttpHeaderStream()
+                        .GetHeader(clientStream, CancellationToken.None);
 
-                if (httpHeader == null)
-                {
-                    return;
-                }
+                    if (httpHeader == null)
+                    {
+                        return;
+                    }
 
-                if (httpHeader.Verb == "CONNECT")
-                {
-                    await new ProxyTunnelHandler().Run(httpHeader, clientStream);
+                    if (httpHeader.Verb == "CONNECT")
+                    {
+                        await new ProxyTunnelHandler().Run(httpHeader, clientStream);
+                    }
+                    else
+                    {
+                        await new ProxyHttpHandler().Run(httpHeader, clientStream);
+                    }
                 }
-                else
-                {
-                    await new ProxyHttpHandler().Run(httpHeader, clientStream);
-                }
+            }
+            catch (SocketException)
+            {
             }
         }
     }
