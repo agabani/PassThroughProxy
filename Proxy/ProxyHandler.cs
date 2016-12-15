@@ -36,7 +36,7 @@ namespace Proxy
                     bytes = await sourceStream.ReadAsync(buffer, 0, BufferSize, token);
                     Console.WriteLine(Encoding.ASCII.GetString(buffer, 0, bytes));
                     await destinationStream.WriteAsync(buffer, 0, bytes, token);
-                } while (bytes != 0 && !token.IsCancellationRequested);
+                } while (bytes > 0 && !token.IsCancellationRequested);
             }
         }
     }
