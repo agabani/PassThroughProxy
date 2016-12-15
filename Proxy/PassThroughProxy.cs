@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+using Proxy.MultiHost;
 
 namespace Proxy
 {
@@ -10,7 +11,7 @@ namespace Proxy
 
         public PassThroughProxy(int listenPort, string hostname, int port)
         {
-            Action<TcpClient, CancellationToken> handleClient = async (client, token) => await new ProxyHandler().Run(client, hostname, port, token);
+            Action<TcpClient, CancellationToken> handleClient = async (client, token) => await new ProxyHandler().Run(client, new Address(hostname, port), token);
 
             _proxyListener = new ProxyListener(listenPort, handleClient);
         }

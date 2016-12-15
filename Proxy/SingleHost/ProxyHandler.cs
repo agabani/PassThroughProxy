@@ -4,17 +4,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Proxy
+namespace Proxy.SingleHost
 {
     public class ProxyHandler
     {
         private const int BufferSize = 8196;
 
-        public async Task Run(TcpClient client, string hostname, int port, CancellationToken token)
+        public async Task Run(TcpClient client, Address address, CancellationToken token)
         {
             using (var target = new TcpClient())
             {
-                await target.ConnectAsync(hostname, port);
+                await target.ConnectAsync(address.Hostname, address.Port);
 
                 await Task.WhenAll(
                     Proxy(target, client, token),

@@ -36,10 +36,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Address.cs" />
+    <Compile Include="MultiHost\ProxyHandler.cs" />
+    <Compile Include="MultiHost\StreamFactory.cs" />
     <Compile Include="PassThroughProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyHandler.cs" />
+    <Compile Include="SingleHost\ProxyHandler.cs" />
     <Compile Include="ProxyListener.cs" />
   </ItemGroup>
   <ItemGroup>
