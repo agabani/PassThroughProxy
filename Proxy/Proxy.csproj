@@ -37,6 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="FullProxy\HttpHeader.cs" />
+    <Compile Include="FullProxy\HttpHeaderStream.cs" />
+    <Compile Include="FullProxy\ProxyHandler.cs" />
+    <Compile Include="FullProxy\TcpTunnel.cs" />
     <Compile Include="HttpsHost\HttpHeader.cs" />
     <Compile Include="HttpsHost\HttpHeaderStream.cs" />
     <Compile Include="HttpsHost\ProxyHandler.cs" />

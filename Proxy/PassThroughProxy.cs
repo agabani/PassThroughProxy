@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using Proxy.HttpsHost;
+using Proxy.FullProxy;
 
 namespace Proxy
 {
