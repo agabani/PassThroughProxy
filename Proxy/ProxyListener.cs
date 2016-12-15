@@ -31,10 +31,7 @@ namespace Proxy
             {
                 var tcpClient = await listener.AcceptTcpClientAsync();
 
-                if (tcpClient != null)
-                {
-                    handleClient(tcpClient, token);
-                }
+                handleClient(tcpClient, token);
             }
         }
 
