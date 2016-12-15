@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Proxy.HttpsHost
+namespace Proxy
 {
     public class HttpHeaderStream
     {

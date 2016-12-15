@@ -37,25 +37,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
-    <Compile Include="FullProxy\HttpHeader.cs" />
-    <Compile Include="FullProxy\HttpHeaderStream.cs" />
-    <Compile Include="FullProxy\ProxyHandler.cs" />
-    <Compile Include="FullProxy\ProxyHttpHandler.cs" />
-    <Compile Include="FullProxy\ProxyTunnelHandler.cs" />
-    <Compile Include="FullProxy\TcpOneWayTunnel.cs" />
-    <Compile Include="FullProxy\TcpTunnel.cs" />
-    <Compile Include="HttpsHost\HttpHeader.cs" />
-    <Compile Include="HttpsHost\HttpHeaderStream.cs" />
-    <Compile Include="HttpsHost\ProxyHandler.cs" />
-    <Compile Include="HttpsHost\TcpTunnel.cs" />
-    <Compile Include="MultiHost\HttpHeader.cs" />
-    <Compile Include="MultiHost\HttpHeaderStream.cs" />
-    <Compile Include="MultiHost\ProxyHandler.cs" />
-    <Compile Include="MultiHost\StreamPool.cs" />
+    <Compile Include="HttpHeader.cs" />
+    <Compile Include="HttpHeaderStream.cs" />
+    <Compile Include="ProxyHandler.cs" />
+    <Compile Include="ProxyHttpHandler.cs" />
+    <Compile Include="ProxyTunnelHandler.cs" />
+    <Compile Include="TcpOneWayTunnel.cs" />
+    <Compile Include="TcpTunnel.cs" />
     <Compile Include="PassThroughProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingleHost\ProxyHandler.cs" />
     <Compile Include="ProxyListener.cs" />
   </ItemGroup>
   <ItemGroup>

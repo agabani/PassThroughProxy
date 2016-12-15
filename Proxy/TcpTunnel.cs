@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Proxy.FullProxy
+namespace Proxy
 {
     public class TcpTunnel : IDisposable
     {

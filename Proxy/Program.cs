@@ -11,7 +11,7 @@ namespace Proxy
 
         private static async Task MainAsync(string[] args)
         {
-            using (var passThroughProxy = new PassThroughProxy(8889))
+            using (new PassThroughProxy(8889))
             {
                 while (true)
                 {
