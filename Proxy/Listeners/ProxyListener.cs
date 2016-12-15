@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace Proxy
+namespace Proxy.Listeners
 {
     public class ProxyListener : IDisposable
     {

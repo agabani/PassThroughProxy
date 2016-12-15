@@ -1,21 +1,18 @@
 ﻿using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Proxy
+namespace Proxy.Tunnels
 {
-    public class TcpTunnel : IDisposable
+    public class TcpOneWayTunnel : IDisposable
     {
         private const int BufferSize = 8192;
         private CancellationTokenSource _cancellationTokenSource;
-        private NetworkStream _client;
         private NetworkStream _host;
 
-        public TcpTunnel(NetworkStream client, NetworkStream host)
+        public TcpOneWayTunnel(NetworkStream host)
         {
-            _client = client;
             _host = host;
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -27,11 +24,10 @@ namespace Proxy
             GC.SuppressFinalize(this);
         }
 
-        public async Task Run()
+        public async Task Run(NetworkStream client)
         {
             await Task.WhenAny(
-                Tunnel(_client, _host, _cancellationTokenSource.Token),
-                Tunnel(_host, _client, _cancellationTokenSource.Token));
+                Tunnel(_host, client, _cancellationTokenSource.Token));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -44,12 +40,6 @@ namespace Proxy
                     _cancellationTokenSource = null;
                 }
 
-                if (_client != null)
-                {
-                    _client.Dispose();
-                    _client = null;
-                }
-
                 if (_host != null)
                 {
                     _host.Dispose();
@@ -58,7 +48,7 @@ namespace Proxy
             }
         }
 
-        private static async Task Tunnel(Stream source, Stream destination, CancellationToken token)
+        private static async Task Tunnel(NetworkStream source, NetworkStream destination, CancellationToken token)
         {
             var buffer = new byte[BufferSize];
 

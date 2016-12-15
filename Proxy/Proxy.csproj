@@ -36,18 +36,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Address.cs" />
-    <Compile Include="HttpHeader.cs" />
-    <Compile Include="HttpHeaderStream.cs" />
-    <Compile Include="ProxyHandler.cs" />
-    <Compile Include="ProxyHttpHandler.cs" />
-    <Compile Include="ProxyTunnelHandler.cs" />
-    <Compile Include="TcpOneWayTunnel.cs" />
-    <Compile Include="TcpTunnel.cs" />
+    <Compile Include="Network\Address.cs" />
+    <Compile Include="Headers\HttpHeader.cs" />
+    <Compile Include="Headers\HttpHeaderStream.cs" />
+    <Compile Include="ProxyHandlers\ProxyHandler.cs" />
+    <Compile Include="ProxyHandlers\ProxyHttpHandler.cs" />
+    <Compile Include="ProxyHandlers\ProxyTunnelHandler.cs" />
+    <Compile Include="Tunnels\TcpOneWayTunnel.cs" />
+    <Compile Include="Tunnels\TcpTwoWayTunnel.cs" />
     <Compile Include="PassThroughProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyListener.cs" />
+    <Compile Include="Listeners\ProxyListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

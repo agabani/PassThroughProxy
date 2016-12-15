@@ -2,8 +2,10 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Proxy.Headers;
+using Proxy.Tunnels;
 
-namespace Proxy
+namespace Proxy.ProxyHandlers
 {
     public class ProxyTunnelHandler
     {
@@ -11,7 +13,7 @@ namespace Proxy
         {
             using (var host = await CreateHost(httpHeader))
             using (var hostStream = host.GetStream())
-            using (var tunnel = new TcpTunnel(clientStream, hostStream))
+            using (var tunnel = new TcpTwoWayTunnel(clientStream, hostStream))
             {
                 var task = tunnel.Run();
                 await SendConnectionEstablised(clientStream);

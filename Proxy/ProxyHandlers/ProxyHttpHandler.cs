@@ -2,8 +2,11 @@
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Proxy.Headers;
+using Proxy.Network;
+using Proxy.Tunnels;
 
-namespace Proxy
+namespace Proxy.ProxyHandlers
 {
     public class ProxyHttpHandler
     {
