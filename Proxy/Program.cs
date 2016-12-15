@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Proxy
 {
@@ -9,9 +12,9 @@ namespace Proxy
             MainAsync(args).Wait();
         }
 
-        private static async Task MainAsync(string[] args)
+        private static async Task MainAsync(IEnumerable<string> args)
         {
-            using (new PassThroughProxy(8889))
+            using (new PassThroughProxy(int.Parse(args.FirstOrDefault() ?? ConfigurationManager.AppSettings["port"])))
             {
                 while (true)
                 {
