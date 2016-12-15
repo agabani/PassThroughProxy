@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,8 +15,11 @@ namespace Proxy
 
         private static async Task MainAsync(IEnumerable<string> args)
         {
-            using (new PassThroughProxy(int.Parse(args.FirstOrDefault() ?? ConfigurationManager.AppSettings["port"])))
+            var port = int.Parse(args.FirstOrDefault() ?? ConfigurationManager.AppSettings["port"]);
+
+            using (new PassThroughProxy(port))
             {
+                Console.WriteLine($"Listening on port {port}...");
                 while (true)
                 {
                     await Task.Delay(1000);
