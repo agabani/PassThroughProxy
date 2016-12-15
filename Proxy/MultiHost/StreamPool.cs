@@ -67,14 +67,19 @@ namespace Proxy.MultiHost
 
             var buffer = new byte[bufferSize];
 
-            int bytes;
-
-            do
+            try
             {
-                bytes = await source.ReadAsync(buffer, 0, bufferSize, token);
-                Console.Write(Encoding.ASCII.GetString(buffer, 0, bytes));
-                await destination.WriteAsync(buffer, 0, bytes, token);
-            } while (bytes > 0 && !token.IsCancellationRequested);
+                int bytes;
+                do
+                {
+                    bytes = await source.ReadAsync(buffer, 0, bufferSize, token);
+                    Console.Write(Encoding.ASCII.GetString(buffer, 0, bytes));
+                    await destination.WriteAsync(buffer, 0, bytes, token);
+                } while (bytes > 0 && !token.IsCancellationRequested);
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
     }
 }
