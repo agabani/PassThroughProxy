@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,63 +9,77 @@ namespace Proxy.FullProxy
     {
         private const int BufferSize = 8192;
 
-        public async Task Run(HttpHeader httpHeader, NetworkStream clientStream)
+        public async Task Run(HttpHeader header, NetworkStream clientStream)
         {
-            var address = httpHeader.Host;
-
-            var host = new TcpClient();
-            await host.ConnectAsync(address.Hostname, address.Port);
-
-            var hostStream = host.GetStream();
-
-            var oneWayTunnel = new TcpOneWayTunnel(hostStream);
-            var oneWayTunnelTask = oneWayTunnel.Run(clientStream);
-
-            await hostStream.WriteAsync(httpHeader.Array, 0, httpHeader.Array.Length);
-
-            if (httpHeader.ContentLength > 0)
-            {
-                await ForwardBody(clientStream, hostStream, httpHeader.ContentLength);
-            }
-
-            var buffer = new byte[BufferSize];
+            Address currentAddress = null;
+            TcpClient host = null;
+            NetworkStream hostStream = null;
+            TcpOneWayTunnel oneWayTunnel = null;
 
             int bytesRead;
 
             do
             {
-                var header = await new HttpHeaderStream().GetHeader(clientStream, CancellationToken.None);
+                header = await GetHeader(header, clientStream);
 
                 if (header == null)
                 {
                     return;
                 }
 
-                if (header.Host.Hostname != address.Hostname || header.Host.Port != address.Port)
+                if (IsNewHost(currentAddress, header.Host))
                 {
-                    using (oneWayTunnel)
-                    using (hostStream)
-                    using (host)
-                    {
-                    }
+                    TerminateHost(oneWayTunnel, hostStream, host);
 
-                    host = new TcpClient();
-                    await host.ConnectAsync(header.Host.Hostname, header.Host.Port);
+                    host = await ConnectTo(header.Host);
                     hostStream = host.GetStream();
+                    oneWayTunnel = Tunnel(hostStream, clientStream);
 
-                    oneWayTunnel = new TcpOneWayTunnel(hostStream);
-                    oneWayTunnelTask = oneWayTunnel.Run(clientStream);
-
-                    address = header.Host;
+                    currentAddress = header.Host;
                 }
 
                 bytesRead = await ForwardHeader(header, hostStream);
 
-                if (header.ContentLength > 0)
+                if (HasBody(header))
                 {
                     bytesRead = await ForwardBody(clientStream, hostStream, header.ContentLength);
                 }
+                header = null;
             } while (bytesRead > 0);
+        }
+
+        private static async Task<HttpHeader> GetHeader(HttpHeader header, NetworkStream stream)
+        {
+            return header ?? await new HttpHeaderStream().GetHeader(stream, CancellationToken.None);
+        }
+
+        private static bool IsNewHost(Address currentAddress, Address targetAddress)
+        {
+            return currentAddress == null || !Equals(targetAddress, currentAddress);
+        }
+
+        private static void TerminateHost(params IDisposable[] objects)
+        {
+            foreach (var disposable in objects)
+            {
+                using (disposable)
+                {
+                }
+            }
+        }
+
+        private static async Task<TcpClient> ConnectTo(Address address)
+        {
+            var host = new TcpClient();
+            await host.ConnectAsync(address.Hostname, address.Port);
+            return host;
+        }
+
+        private static TcpOneWayTunnel Tunnel(NetworkStream source, NetworkStream destination)
+        {
+            var tunnel = new TcpOneWayTunnel(source);
+            tunnel.Run(destination).GetAwaiter();
+            return tunnel;
         }
 
         private static async Task<int> ForwardHeader(HttpHeader httpHeader, NetworkStream host)
@@ -73,7 +88,12 @@ namespace Proxy.FullProxy
             return httpHeader.Array.Length;
         }
 
-        private async Task<int> ForwardBody(NetworkStream client, NetworkStream host, long contentLength)
+        private static bool HasBody(HttpHeader header)
+        {
+            return header.ContentLength > 0;
+        }
+
+        private static async Task<int> ForwardBody(NetworkStream client, NetworkStream host, long contentLength)
         {
             var buffer = new byte[BufferSize];
 
