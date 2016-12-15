@@ -42,8 +42,6 @@ namespace Proxy.Tests
         private readonly Uri _serverBaseAddress = new Uri($"http://{MachineName}:{ServerPort}");
         private readonly Uri _proxyBaseAddress = new Uri($"http://{MachineName}:{ProxyPort}");
 
-        private readonly string _proxyIpAddress = Dns.GetHostAddresses(MachineName).First(address => address.AddressFamily == AddressFamily.InterNetwork).ToString();
-
         private PassThroughProxy _proxy;
         private HttpStubServer _server;
         private HttpClientHandler _handler;

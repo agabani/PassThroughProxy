@@ -13,7 +13,9 @@ namespace Proxy.MultiHost
         {
             using (var memoryStream = await GetStream(client, token))
             {
-                return new HttpHeader(memoryStream.ToArray());
+                var array = memoryStream.ToArray();
+
+                return array.Length == 0 ? null : new HttpHeader(array);
             }
         }
 

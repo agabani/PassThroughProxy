@@ -33,6 +33,11 @@ namespace Proxy.MultiHost
                     {
                         var header = await stream.GetHeader(client, token);
 
+                        if (header == null)
+                        {
+                            return;
+                        }
+
                         var host = pool.Get(header.Host, client, token);
 
                         bytes = await ForwardHeader(header, host, token);
