@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ namespace Proxy.Tunnels
             }
         }
 
-        private static async Task Tunnel(NetworkStream source, NetworkStream destination, CancellationToken token)
+        private static async Task Tunnel(Stream source, Stream destination, CancellationToken token)
         {
             var buffer = new byte[BufferSize];
 

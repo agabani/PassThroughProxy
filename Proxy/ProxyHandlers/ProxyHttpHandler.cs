@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Proxy.ProxyHandlers
             NetworkStream hostStream = null;
             TcpOneWayTunnel oneWayTunnel = null;
 
+            var buffer = new byte[BufferSize];
             int bytesRead;
 
             do
@@ -45,7 +47,7 @@ namespace Proxy.ProxyHandlers
 
                 if (HasBody(header))
                 {
-                    bytesRead = await ForwardBody(clientStream, hostStream, header.ContentLength);
+                    bytesRead = await ForwardBody(clientStream, hostStream, header.ContentLength, buffer);
                 }
                 header = null;
             } while (bytesRead > 0);
@@ -96,10 +98,8 @@ namespace Proxy.ProxyHandlers
             return header.ContentLength > 0;
         }
 
-        private static async Task<int> ForwardBody(NetworkStream client, NetworkStream host, long contentLength)
+        private static async Task<int> ForwardBody(Stream client, Stream host, long contentLength, byte[] buffer)
         {
-            var buffer = new byte[BufferSize];
-
             int bytesRead;
 
             do
