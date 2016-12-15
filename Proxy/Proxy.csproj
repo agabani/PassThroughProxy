@@ -40,7 +40,9 @@
     <Compile Include="FullProxy\HttpHeader.cs" />
     <Compile Include="FullProxy\HttpHeaderStream.cs" />
     <Compile Include="FullProxy\ProxyHandler.cs" />
+    <Compile Include="FullProxy\ProxyHttpHandler.cs" />
     <Compile Include="FullProxy\ProxyTunnelHandler.cs" />
+    <Compile Include="FullProxy\TcpOneWayTunnel.cs" />
     <Compile Include="FullProxy\TcpTunnel.cs" />
     <Compile Include="HttpsHost\HttpHeader.cs" />
     <Compile Include="HttpsHost\HttpHeaderStream.cs" />

@@ -23,6 +23,10 @@ namespace Proxy.FullProxy
                 {
                     await new ProxyTunnelHandler().Run(httpHeader, clientStream);
                 }
+                else
+                {
+                    await new ProxyHttpHandler().Run(httpHeader, clientStream);
+                }
             }
         }
     }
