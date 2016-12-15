@@ -53,11 +53,6 @@ namespace Proxy.MultiHost
             }
         }
 
-        public Stream GetStream(TcpClient client)
-        {
-            return client.GetStream();
-        }
-
         private static void Connect(Address address, TcpClient client)
         {
             if (!client.Connected)
@@ -77,7 +72,7 @@ namespace Proxy.MultiHost
             do
             {
                 bytes = await source.ReadAsync(buffer, 0, bufferSize, token);
-                Console.WriteLine(Encoding.ASCII.GetString(buffer, 0, bytes));
+                Console.Write(Encoding.ASCII.GetString(buffer, 0, bytes));
                 await destination.WriteAsync(buffer, 0, bytes, token);
             } while (bytes > 0 && !token.IsCancellationRequested);
         }
