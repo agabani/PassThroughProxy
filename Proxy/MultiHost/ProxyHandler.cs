@@ -11,7 +11,7 @@ namespace Proxy.MultiHost
     {
         private const int BufferSize = 8196;
 
-        public async Task Run(TcpClient client, Address address, CancellationToken token)
+        public async Task Run(TcpClient client, CancellationToken token)
         {
             using (client)
             {
@@ -24,24 +24,18 @@ namespace Proxy.MultiHost
             using (client)
             {
                 var buffer = new byte[BufferSize];
-                var headerStream = new HttpHeaderStream();
+                var stream = new HttpHeaderStream();
 
-                using (var factory = new StreamFactory())
+                using (var pool = new StreamPool())
                 {
                     int bytes;
                     do
                     {
-                        Stream host;
-                        HttpHeader header;
+                        var header = await stream.GetHeader(client, token);
 
-                        using (var stream = await headerStream.GetStream(client, token))
-                        {
-                            header = new HttpHeader(stream);
+                        var host = pool.Get(header.Host, client, token);
 
-                            host = factory.GetStream(header.Host, client, token);
-
-                            bytes = await ForwardHeader(header, host, token);
-                        }
+                        bytes = await ForwardHeader(header, host, token);
 
                         if (header.ContentLength > 0)
                         {

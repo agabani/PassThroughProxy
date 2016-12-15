@@ -40,7 +40,7 @@
     <Compile Include="MultiHost\HttpHeader.cs" />
     <Compile Include="MultiHost\HttpHeaderStream.cs" />
     <Compile Include="MultiHost\ProxyHandler.cs" />
-    <Compile Include="MultiHost\StreamFactory.cs" />
+    <Compile Include="MultiHost\StreamPool.cs" />
     <Compile Include="PassThroughProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

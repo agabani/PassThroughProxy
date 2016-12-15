@@ -9,7 +9,15 @@ namespace Proxy.MultiHost
     {
         private static readonly string[] Delimiter = {"\r", "\n", "\r", "\n"};
 
-        public async Task<MemoryStream> GetStream(Stream client, CancellationToken token)
+        public async Task<HttpHeader> GetHeader(Stream client, CancellationToken token)
+        {
+            using (var memoryStream = await GetStream(client, token))
+            {
+                return new HttpHeader(memoryStream.ToArray());
+            }
+        }
+
+        private static async Task<MemoryStream> GetStream(Stream client, CancellationToken token)
         {
             var memoryStream = new MemoryStream();
             var readBuffer = new byte[1];

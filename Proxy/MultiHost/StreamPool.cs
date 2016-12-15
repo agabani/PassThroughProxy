@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Proxy.MultiHost
 {
-    public class StreamFactory : IDisposable
+    public class StreamPool : IDisposable
     {
         private readonly object _lock = new object();
         private readonly Dictionary<Address, TcpClient> _repository = new Dictionary<Address, TcpClient>();
@@ -24,7 +24,7 @@ namespace Proxy.MultiHost
             GC.SuppressFinalize(this);
         }
 
-        public Stream GetStream(Address address, Stream clientStream, CancellationToken token)
+        public Stream Get(Address address, Stream clientStream, CancellationToken token)
         {
             lock (_lock)
             {

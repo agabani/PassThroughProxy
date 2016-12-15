@@ -9,9 +9,9 @@ namespace Proxy
     {
         private ProxyListener _proxyListener;
 
-        public PassThroughProxy(int listenPort, Address address)
+        public PassThroughProxy(int listenPort)
         {
-            Action<TcpClient, CancellationToken> handleClient = async (client, token) => await new ProxyHandler().Run(client, address, token);
+            Action<TcpClient, CancellationToken> handleClient = async (client, token) => await new ProxyHandler().Run(client, token);
 
             _proxyListener = new ProxyListener(listenPort, handleClient);
         }
