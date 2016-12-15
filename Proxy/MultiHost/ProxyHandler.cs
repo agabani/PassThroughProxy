@@ -11,42 +11,52 @@ namespace Proxy.MultiHost
     {
         private const int BufferSize = 8196;
 
-        public async Task Run(TcpClient tcpClient, Address address, CancellationToken token)
+        public async Task Run(TcpClient client, Address address, CancellationToken token)
         {
-            await Task.WhenAll(Proxy(tcpClient.GetStream(), token));
+            using (client)
+            {
+                await Task.WhenAll(Proxy(client.GetStream(), token));
+            }
         }
 
         private static async Task Proxy(Stream client, CancellationToken token)
         {
-            var buffer = new byte[BufferSize];
-            var headerStream = new HttpHeaderStream();
-
-            int bytes;
-
-            var factory = new StreamFactory();
-
-            do
+            using (client)
             {
-                Stream host;
+                var buffer = new byte[BufferSize];
+                var headerStream = new HttpHeaderStream();
 
-                // Forward Header
-                HttpHeader httpHeader;
-                using (var header = await headerStream.GetStream(client, token))
+                using (var factory = new StreamFactory())
                 {
-                    var array = header.ToArray();
+                    int bytes;
+                    do
+                    {
+                        Stream host;
+                        HttpHeader header;
 
-                    httpHeader = new HttpHeader(array);
+                        using (var stream = await headerStream.GetStream(client, token))
+                        {
+                            header = new HttpHeader(stream);
 
-                    host = factory.GetStream(httpHeader.Host, client, token);
+                            host = factory.GetStream(header.Host, client, token);
 
-                    bytes = array.Length;
-                    Console.Write(Encoding.ASCII.GetString(array, 0, bytes));
-                    host.WriteAsync(array, 0, array.Length, token).Wait(token);
+                            bytes = await ForwardHeader(header, host, token);
+                        }
+
+                        if (header.ContentLength > 0)
+                        {
+                            bytes = await ForwardBody(client, host, header.ContentLength, buffer, BufferSize, token);
+                        }
+                    } while (bytes > 0 && !token.IsCancellationRequested);
                 }
+            }
+        }
 
-                // Forward Body
-                await ForwardBody(client, host, httpHeader.ContentLength, buffer, BufferSize, token);
-            } while (bytes > 0 && !token.IsCancellationRequested);
+        private static async Task<int> ForwardHeader(HttpHeader httpHeader, Stream host, CancellationToken token)
+        {
+            await host.WriteAsync(httpHeader.Array, 0, httpHeader.Array.Length, token);
+            Console.Write(Encoding.ASCII.GetString(httpHeader.Array, 0, httpHeader.Array.Length));
+            return httpHeader.Array.Length;
         }
 
         private static async Task<int> ForwardBody(Stream client, Stream host, long contentLength, byte[] buffer, int bufferSize, CancellationToken token)

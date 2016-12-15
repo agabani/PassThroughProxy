@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -7,6 +8,13 @@ namespace Proxy.MultiHost
 {
     public class HttpHeader
     {
+        public HttpHeader(MemoryStream stream) : this(stream.ToArray())
+        {
+            using (stream)
+            {
+            }
+        }
+
         public HttpHeader(byte[] array)
         {
             Array = array;
