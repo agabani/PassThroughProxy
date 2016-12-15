@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
 namespace Proxy.MultiHost
 {
@@ -22,7 +24,7 @@ namespace Proxy.MultiHost
             GC.SuppressFinalize(this);
         }
 
-        public Stream GetStream(Address address, Action<Stream> handleStream)
+        public Stream GetStream(Address address, Stream clientStream, CancellationToken token)
         {
             lock (_lock)
             {
@@ -30,10 +32,7 @@ namespace Proxy.MultiHost
                 {
                     var client = _repository[address];
 
-                    if (!client.Connected)
-                    {
-                        client.Connect(address.Hostname, address.Port);
-                    }
+                    Connect(address, client);
 
                     return client.GetStream();
                 }
@@ -43,14 +42,11 @@ namespace Proxy.MultiHost
 
                     _repository[address] = client;
 
-                    if (!client.Connected)
-                    {
-                        client.Connect(address.Hostname, address.Port);
-                    }
+                    Connect(address, client);
 
                     var stream = client.GetStream();
 
-                    handleStream(stream);
+                    Proxy(stream, clientStream, token);
 
                     return stream;
                 }
@@ -60,6 +56,30 @@ namespace Proxy.MultiHost
         public Stream GetStream(TcpClient client)
         {
             return client.GetStream();
+        }
+
+        private static void Connect(Address address, TcpClient client)
+        {
+            if (!client.Connected)
+            {
+                client.Connect(address.Hostname, address.Port);
+            }
+        }
+
+        private static async void Proxy(Stream source, Stream destination, CancellationToken token)
+        {
+            const int bufferSize = 8196;
+
+            var buffer = new byte[bufferSize];
+
+            int bytes;
+
+            do
+            {
+                bytes = await source.ReadAsync(buffer, 0, bufferSize, token);
+                Console.WriteLine(Encoding.ASCII.GetString(buffer, 0, bytes));
+                await destination.WriteAsync(buffer, 0, bytes, token);
+            } while (bytes > 0 && !token.IsCancellationRequested);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Proxy.MultiHost
             var streamFactory = new StreamFactory();
 
             var client = streamFactory.GetStream(tcpClient);
-            var host = streamFactory.GetStream(address, async s => await Proxy(s, client, token));
+            var host = streamFactory.GetStream(address, client, token);
 
             await Task.WhenAll(Proxy(client, host, token));
         }
