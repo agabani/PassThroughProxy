@@ -3,6 +3,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
+using System.Text;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using StubServer.Http;
 
@@ -52,10 +54,13 @@ namespace Proxy.Tests
         public void it_talks_to_server()
         {
             _server
-                .When(message => true)
+                .When(message => message.Method == HttpMethod.Post)
                 .Return(() => new HttpResponseMessage(HttpStatusCode.Created));
 
-            _response = _client.SendAsync(new HttpRequestMessage(HttpMethod.Get, _serverBaseAddress)).GetAwaiter().GetResult();
+            _response = _client.SendAsync(new HttpRequestMessage(HttpMethod.Post, _serverBaseAddress)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new {key = "value"}), Encoding.UTF8, "application/json")
+            }).GetAwaiter().GetResult();
 
             Assert.That(_response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         }
