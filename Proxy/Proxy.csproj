@@ -37,6 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="HttpsHost\HttpHeader.cs" />
+    <Compile Include="HttpsHost\HttpHeaderStream.cs" />
+    <Compile Include="HttpsHost\ProxyHandler.cs" />
+    <Compile Include="HttpsHost\TcpTunnel.cs" />
     <Compile Include="MultiHost\HttpHeader.cs" />
     <Compile Include="MultiHost\HttpHeaderStream.cs" />
     <Compile Include="MultiHost\ProxyHandler.cs" />
@@ -50,6 +54,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
