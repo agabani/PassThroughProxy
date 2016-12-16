@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Proxy.Headers;
+using Proxy.System;
 
 namespace Proxy.ProxyHandlers
 {
@@ -20,6 +21,16 @@ namespace Proxy.ProxyHandlers
                     if (httpHeader == null)
                     {
                         return;
+                    }
+
+                    if (Configuration.AuthenticationEnabled)
+                    {
+                        var authenticated = await new ProxyAuthenticationHandler().Run(httpHeader, clientStream);
+
+                        if (!authenticated)
+                        {
+                            return;
+                        }
                     }
 
                     if (httpHeader.Verb == "CONNECT")

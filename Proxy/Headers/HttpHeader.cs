@@ -10,14 +10,14 @@ namespace Proxy.Headers
     {
         public HttpHeader(byte[] array)
         {
-            Array = array;
             Parse(this, array);
         }
 
-        public byte[] Array { get; private set; }
         public Address Host { get; private set; }
         public long ContentLength { get; private set; }
         public string Verb { get; private set; }
+        public byte[] Array { get; private set; }
+        public IEnumerable<string> ArrayList { get; private set; }
 
         private static void Parse(HttpHeader self, byte[] array)
         {
@@ -26,6 +26,25 @@ namespace Proxy.Headers
             self.Host = GetAddress(strings);
             self.ContentLength = GetContentLength(strings);
             self.Verb = GetVerb(strings);
+            self.Array = GetArray(strings);
+            self.ArrayList = strings;
+        }
+
+        private static byte[] GetArray(IEnumerable<string> arrayList)
+        {
+            var builder = new StringBuilder();
+
+            var enumerable = arrayList
+                .Where(@string => !@string.StartsWith("Proxy-Authorization:", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var @string in enumerable)
+            {
+                builder.Append(@string).Append("\r\n");
+            }
+
+            builder.Append("\r\n");
+
+            return Encoding.ASCII.GetBytes(builder.ToString());
         }
 
         private static Address GetAddress(IEnumerable<string> strings)

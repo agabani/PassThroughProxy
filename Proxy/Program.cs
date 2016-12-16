@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using Proxy.System;
 
 namespace Proxy
 {
@@ -15,11 +15,13 @@ namespace Proxy
 
         private static async Task MainAsync(IEnumerable<string> args)
         {
-            var port = int.Parse(args.FirstOrDefault() ?? ConfigurationManager.AppSettings["port"]);
+            var commandlinePort = args.FirstOrDefault();
+
+            var port = commandlinePort != null ? int.Parse(commandlinePort) : Configuration.ProxyPort;
 
             using (new PassThroughProxy(port))
             {
-                Console.WriteLine($"Listening on port {port}...");
+                Console.WriteLine($"Proxy is running. Listening on port {port}. Authentication is {(Configuration.AuthenticationEnabled ? "enabled" : "disabled")}.");
                 while (true)
                 {
                     await Task.Delay(1000);

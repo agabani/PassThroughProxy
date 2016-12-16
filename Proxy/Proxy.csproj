@@ -40,9 +40,11 @@
     <Compile Include="Network\Address.cs" />
     <Compile Include="Headers\HttpHeader.cs" />
     <Compile Include="Headers\HttpHeaderStream.cs" />
+    <Compile Include="ProxyHandlers\ProxyAuthenticationHandler.cs" />
     <Compile Include="ProxyHandlers\ProxyHandler.cs" />
     <Compile Include="ProxyHandlers\ProxyHttpHandler.cs" />
     <Compile Include="ProxyHandlers\ProxyTunnelHandler.cs" />
+    <Compile Include="System\Configuration.cs" />
     <Compile Include="Tunnels\TcpOneWayTunnel.cs" />
     <Compile Include="Tunnels\TcpTwoWayTunnel.cs" />
     <Compile Include="PassThroughProxy.cs" />
