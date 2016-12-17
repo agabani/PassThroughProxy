@@ -12,11 +12,11 @@
     "rules": [
       {
         "pattern": ".*reddit.com",
-        "action": "deny"
+        "action": "allow"
       },
       {
-        "pattern": "imgur.com",
-        "action": "allow"
+        "pattern": ".*bbc.co.uk",
+        "action": "deny"
       }
     ]
   }
