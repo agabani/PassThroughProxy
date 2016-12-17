@@ -6,8 +6,10 @@
         Initialized,
         NewHostRequired,
         Connected,
+        Authenticated,
+        AuthenticationNotRequired,
         Http,
         Https,
-        Terminated,
+        Terminated
     }
 }

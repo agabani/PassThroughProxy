@@ -9,7 +9,9 @@ namespace Proxy.ProxyHandlerNext
         private static readonly Dictionary<HandlerResult, IHandler> Handlers = new Dictionary<HandlerResult, IHandler>
         {
             {HandlerResult.Uninitialized, new FirstRequestHandler()},
-            {HandlerResult.Initialized, new ProxyTypeHandler()},
+            {HandlerResult.Initialized, new AuthenticationHandler()},
+            {HandlerResult.Authenticated, new ProxyTypeHandler()},
+            {HandlerResult.AuthenticationNotRequired, new ProxyTypeHandler()},
             {HandlerResult.Http, new HttpHandler()},
             {HandlerResult.Https, new HttpsHandler()},
             {HandlerResult.NewHostRequired, new NewHostHandler()},
