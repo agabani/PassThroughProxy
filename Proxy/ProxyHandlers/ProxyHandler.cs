@@ -1,8 +1,8 @@
 ﻿using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Proxy.Configurations;
 using Proxy.Headers;
-using Proxy.System;
 
 namespace Proxy.ProxyHandlers
 {
@@ -23,7 +23,7 @@ namespace Proxy.ProxyHandlers
                         return;
                     }
 
-                    if (Configuration.AuthenticationEnabled)
+                    if (Configuration.Get().Authentication.Enabled)
                     {
                         var authenticated = await new ProxyAuthenticationHandler().Run(httpHeader, clientStream);
 

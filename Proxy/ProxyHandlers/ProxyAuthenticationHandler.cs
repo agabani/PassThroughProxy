@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Proxy.Configurations;
 using Proxy.Headers;
-using Proxy.System;
 
 namespace Proxy.ProxyHandlers
 {
@@ -49,7 +49,7 @@ namespace Proxy.ProxyHandlers
                 .Substring(key.Length)
                 .Trim();
 
-            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{Configuration.AuthenticationUsername}:{Configuration.AuthenticationPassword}";
+            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{Configuration.Get().Authentication.Username}:{Configuration.Get().Authentication.Password}";
         }
 
         private static async Task SendProxyAuthenticationRequired(Stream stream)

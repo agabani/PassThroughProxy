@@ -1,0 +1,23 @@
+﻿{
+  "server": {
+    "port": 8889
+  },
+  "authentication": {
+    "enabled": false,
+    "username": "username",
+    "password": "password"
+  },
+  "firewall": {
+    "enabled": true,
+    "rules": [
+      {
+        "hostname": "reddit.com",
+        "action": "deny"
+      },
+      {
+        "hostname": "imgur.com",
+        "action": "allow"
+      }
+    ]
+  }
+}
