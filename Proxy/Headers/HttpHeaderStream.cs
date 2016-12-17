@@ -9,6 +9,17 @@ namespace Proxy.Headers
     {
         private static readonly string[] Delimiter = {"\r", "\n", "\r", "\n"};
 
+        private static readonly HttpHeaderStream Self = new HttpHeaderStream();
+
+        private HttpHeaderStream()
+        {
+        }
+
+        public static HttpHeaderStream Instance()
+        {
+            return Self;
+        }
+
         public async Task<HttpHeader> GetHeader(Stream client, CancellationToken token)
         {
             using (var memoryStream = await GetStream(client, token))

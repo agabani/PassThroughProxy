@@ -7,6 +7,12 @@ namespace Proxy.Handlers
 {
     public class FirewallHandler : IHandler
     {
+        private static readonly FirewallHandler Self = new FirewallHandler();
+
+        private FirewallHandler()
+        {
+        }
+
         public Task<HandlerResult> Run(SessionContext context)
         {
             if (!Configuration.Get().Firewall.Enabled)
@@ -17,6 +23,11 @@ namespace Proxy.Handlers
             return IsAllowed(context)
                 ? Task.FromResult(HandlerResult.NewHostConnectionRequired)
                 : Task.FromResult(HandlerResult.Terminated);
+        }
+
+        public static FirewallHandler Instance()
+        {
+            return Self;
         }
 
         private static bool IsAllowed(SessionContext context)

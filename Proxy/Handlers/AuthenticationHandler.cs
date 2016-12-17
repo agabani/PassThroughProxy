@@ -11,6 +11,12 @@ namespace Proxy.Handlers
 {
     public class AuthenticationHandler : IHandler
     {
+        private static readonly AuthenticationHandler Self = new AuthenticationHandler();
+
+        private AuthenticationHandler()
+        {
+        }
+
         public async Task<HandlerResult> Run(SessionContext context)
         {
             if (!IsAuthenticationRequired())
@@ -31,6 +37,11 @@ namespace Proxy.Handlers
 
             await SendProxyAuthenticationInvalid(context.ClientStream);
             return HandlerResult.Terminated;
+        }
+
+        public static AuthenticationHandler Instance()
+        {
+            return Self;
         }
 
         private static bool IsAuthenticationRequired()

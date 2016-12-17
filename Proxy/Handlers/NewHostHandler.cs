@@ -7,6 +7,12 @@ namespace Proxy.Handlers
 {
     public class NewHostHandler : IHandler
     {
+        private static readonly NewHostHandler Self = new NewHostHandler();
+
+        private NewHostHandler()
+        {
+        }
+
         public async Task<HandlerResult> Run(SessionContext context)
         {
             context.RemoveHost();
@@ -16,6 +22,11 @@ namespace Proxy.Handlers
             context.CurrentHostAddress = context.Header.Host;
 
             return HandlerResult.Connected;
+        }
+
+        public static NewHostHandler Instance()
+        {
+            return Self;
         }
 
         private static async Task<TcpClient> Connect(HttpHeader httpHeader)

@@ -11,6 +11,11 @@ namespace Proxy.Handlers
     public class HttpHandler : IHandler
     {
         private const int BufferSize = 8192;
+        private static readonly HttpHandler Self = new HttpHandler();
+
+        private HttpHandler()
+        {
+        }
 
         public async Task<HandlerResult> Run(SessionContext context)
         {
@@ -52,6 +57,11 @@ namespace Proxy.Handlers
             return HandlerResult.Terminated;
         }
 
+        public static HttpHandler Instance()
+        {
+            return Self;
+        }
+
         private static bool IsNewHostRequired(SessionContext sessionContext)
         {
             return sessionContext.CurrentHostAddress == null || !Equals(sessionContext.Header.Host, sessionContext.CurrentHostAddress);
@@ -66,7 +76,7 @@ namespace Proxy.Handlers
 
         private static async Task<HttpHeader> GetHeader(HttpHeader header, Stream stream)
         {
-            return header ?? await new HttpHeaderStream().GetHeader(stream, CancellationToken.None);
+            return header ?? await HttpHeaderStream.Instance().GetHeader(stream, CancellationToken.None);
         }
 
         private static async Task<int> ForwardHeader(HttpHeader httpHeader, Stream host)

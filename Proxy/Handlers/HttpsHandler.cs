@@ -8,6 +8,12 @@ namespace Proxy.Handlers
 {
     public class HttpsHandler : IHandler
     {
+        private static readonly HttpsHandler Self = new HttpsHandler();
+
+        private HttpsHandler()
+        {
+        }
+
         public async Task<HandlerResult> Run(SessionContext context)
         {
             if (context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress))
@@ -23,6 +29,11 @@ namespace Proxy.Handlers
             }
 
             return HandlerResult.Terminated;
+        }
+
+        public static HttpsHandler Instance()
+        {
+            return Self;
         }
 
         private static async Task SendConnectionEstablised(Stream stream)

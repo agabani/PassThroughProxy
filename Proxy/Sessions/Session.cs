@@ -9,15 +9,15 @@ namespace Proxy.Sessions
     {
         private static readonly Dictionary<HandlerResult, IHandler> Handlers = new Dictionary<HandlerResult, IHandler>
         {
-            {HandlerResult.Uninitialized, new FirstRequestHandler()},
-            {HandlerResult.Initialized, new AuthenticationHandler()},
-            {HandlerResult.Authenticated, new ProxyTypeHandler()},
-            {HandlerResult.AuthenticationNotRequired, new ProxyTypeHandler()},
-            {HandlerResult.Http, new HttpHandler()},
-            {HandlerResult.Https, new HttpsHandler()},
-            {HandlerResult.NewHostRequired, new FirewallHandler()},
-            {HandlerResult.NewHostConnectionRequired, new NewHostHandler()},
-            {HandlerResult.Connected, new ProxyTypeHandler()}
+            {HandlerResult.Uninitialized, FirstRequestHandler.Instance()},
+            {HandlerResult.Initialized, AuthenticationHandler.Instance()},
+            {HandlerResult.Authenticated, ProxyTypeHandler.Instance()},
+            {HandlerResult.AuthenticationNotRequired, ProxyTypeHandler.Instance()},
+            {HandlerResult.Http, HttpHandler.Instance()},
+            {HandlerResult.Https, HttpsHandler.Instance()},
+            {HandlerResult.NewHostRequired, FirewallHandler.Instance()},
+            {HandlerResult.NewHostConnectionRequired, NewHostHandler.Instance()},
+            {HandlerResult.Connected, ProxyTypeHandler.Instance()}
         };
 
         public async Task Run(TcpClient client)
