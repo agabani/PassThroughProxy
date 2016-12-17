@@ -46,7 +46,7 @@ namespace Proxy.Handlers
 
         private static bool IsAuthenticationRequired()
         {
-            return Configuration.Get().Authentication.Enabled;
+            return Configuration.Settings.Authentication.Enabled;
         }
 
         private static bool IsProxyAuthorizationHeaderPresent(HttpHeader httpHeader)
@@ -63,7 +63,7 @@ namespace Proxy.Handlers
                 .Substring(key.Length)
                 .Trim();
 
-            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{Configuration.Get().Authentication.Username}:{Configuration.Get().Authentication.Password}";
+            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{Configuration.Settings.Authentication.Username}:{Configuration.Settings.Authentication.Password}";
         }
 
         private static async Task SendProxyAuthenticationRequired(Stream stream)

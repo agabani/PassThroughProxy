@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Proxy.Configurations;
 using StubServer.Http;
 
 namespace Proxy.Tests
@@ -30,6 +31,15 @@ namespace Proxy.Tests
             _handler?.Dispose();
             _server?.Dispose();
             _proxy?.Dispose();
+        }
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            Configuration.Settings = new Configuration(
+                new Server(ProxyPort),
+                new Authentication(false, null, null),
+                new Firewall(false, new Rule[] {}));
         }
 
         private static readonly string MachineName = Environment.MachineName;

@@ -18,9 +18,10 @@ namespace Proxy.Configurations
         public Authentication Authentication { get; private set; }
         public Firewall Firewall { get; private set; }
 
-        public static Configuration Get()
+        public static Configuration Settings
         {
-            return _configuration ?? (_configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("config.json")));
+            get { return _configuration ?? (_configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("config.json"))); }
+            set { _configuration = value; }
         }
     }
 }
