@@ -11,11 +11,11 @@
     "enabled": true,
     "rules": [
       {
-        "hostname": "reddit.com",
+        "pattern": ".*reddit.com",
         "action": "deny"
       },
       {
-        "hostname": "imgur.com",
+        "pattern": "imgur.com",
         "action": "allow"
       }
     ]

@@ -14,13 +14,16 @@ namespace Proxy.Handlers
                 return Task.FromResult(HandlerResult.NewHostConnectionRequired);
             }
 
-            var rule = Configuration.Get()
-                .Firewall.Rules
-                .SingleOrDefault(r => r.Hostname == context.Header.Host.Hostname);
-
-            return rule == null || rule.Action == ActionEnum.Allow
+            return IsAllowed(context)
                 ? Task.FromResult(HandlerResult.NewHostConnectionRequired)
                 : Task.FromResult(HandlerResult.Terminated);
+        }
+
+        private static bool IsAllowed(SessionContext context)
+        {
+            return !Configuration.Get().Firewall.Rules
+                .Any(r => r.Pattern.Match(context.Header.Host.Hostname).Success &&
+                          r.Action == ActionEnum.Deny);
         }
     }
 }
