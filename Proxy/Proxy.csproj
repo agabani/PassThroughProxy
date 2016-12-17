@@ -47,6 +47,15 @@
     <Compile Include="Network\Address.cs" />
     <Compile Include="Headers\HttpHeader.cs" />
     <Compile Include="Headers\HttpHeaderStream.cs" />
+    <Compile Include="ProxyHandlerNext\Context.cs" />
+    <Compile Include="ProxyHandlerNext\FirstRequestHandler.cs" />
+    <Compile Include="ProxyHandlerNext\HandlerResult.cs" />
+    <Compile Include="ProxyHandlerNext\HttpHandler.cs" />
+    <Compile Include="ProxyHandlerNext\IHandler.cs" />
+    <Compile Include="ProxyHandlerNext\NewHostHandler.cs" />
+    <Compile Include="ProxyHandlerNext\ProxyTypeHandler.cs" />
+    <Compile Include="ProxyHandlerNext\Session.cs" />
+    <Compile Include="ProxyHandlerNext\HttpsHandler.cs" />
     <Compile Include="ProxyHandlers\ProxyAuthenticationHandler.cs" />
     <Compile Include="ProxyHandlers\ProxyHandler.cs" />
     <Compile Include="ProxyHandlers\ProxyHttpHandler.cs" />

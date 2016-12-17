@@ -4,73 +4,66 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Proxy.Headers;
-using Proxy.Network;
 using Proxy.Tunnels;
 
-namespace Proxy.ProxyHandlers
+namespace Proxy.ProxyHandlerNext
 {
-    public class ProxyHttpHandler
+    public class HttpHandler : IHandler
     {
         private const int BufferSize = 8192;
 
-        public async Task Run(HttpHeader header, NetworkStream clientStream)
+        public async Task<HandlerResult> Run(Context context)
         {
-            Address currentAddress = null;
-            TcpClient host = null;
-            NetworkStream hostStream = null;
-            TcpOneWayTunnel oneWayTunnel = null;
+            if (context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress))
+            {
+                return HandlerResult.NewHostRequired;
+            }
+
+            var buffer = new byte[BufferSize];
+
+            var oneWayTunnel = Tunnel(context.HostStream, context.ClientStream);
 
             try
             {
-                var buffer = new byte[BufferSize];
                 int bytesRead;
 
                 do
                 {
-                    header = await GetHeader(header, clientStream);
+                    context.Header = await GetHeader(context.Header, context.ClientStream);
 
-                    if (header == null)
+                    if (context.Header == null)
                     {
-                        return;
+                        return HandlerResult.Terminated;
                     }
 
-                    if (IsNewHost(currentAddress, header.Host))
+                    if (context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress))
                     {
-                        TerminateHost(oneWayTunnel, hostStream, host);
+                        TerminateHost(oneWayTunnel);
 
-                        host = await ConnectTo(header.Host);
-                        hostStream = host.GetStream();
-                        oneWayTunnel = Tunnel(hostStream, clientStream);
-
-                        currentAddress = header.Host;
+                        return HandlerResult.NewHostRequired;
                     }
 
-                    bytesRead = await ForwardHeader(header, hostStream);
+                    bytesRead = await ForwardHeader(context.Header, context.HostStream);
 
-                    if (HasBody(header))
+                    if (HasBody(context.Header))
                     {
-                        bytesRead = await ForwardBody(clientStream, hostStream, header.ContentLength, buffer);
+                        bytesRead = await ForwardBody(context.ClientStream, context.HostStream, context.Header.ContentLength, buffer);
                     }
-                    header = null;
+
+                    context.Header = null;
                 } while (bytesRead > 0);
-            }
-            catch (SocketException)
-            {
             }
             finally
             {
-                TerminateHost(oneWayTunnel, hostStream, host);
+                TerminateHost(oneWayTunnel);
             }
+
+            return HandlerResult.Terminated;
         }
 
         private static async Task<HttpHeader> GetHeader(HttpHeader header, NetworkStream stream)
         {
             return header ?? await new HttpHeaderStream().GetHeader(stream, CancellationToken.None);
-        }
-
-        private static bool IsNewHost(Address currentAddress, Address targetAddress)
-        {
-            return currentAddress == null || !Equals(targetAddress, currentAddress);
         }
 
         private static void TerminateHost(params IDisposable[] objects)
@@ -83,17 +76,10 @@ namespace Proxy.ProxyHandlers
             }
         }
 
-        private static async Task<TcpClient> ConnectTo(Address address)
-        {
-            var host = new TcpClient();
-            await host.ConnectAsync(address.Hostname, address.Port);
-            return host;
-        }
-
         private static TcpOneWayTunnel Tunnel(NetworkStream source, NetworkStream destination)
         {
             var tunnel = new TcpOneWayTunnel();
-            tunnel.Run(source, destination).GetAwaiter();
+            tunnel.Run(destination, source).GetAwaiter();
             return tunnel;
         }
 

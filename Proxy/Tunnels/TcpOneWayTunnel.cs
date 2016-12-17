@@ -10,12 +10,9 @@ namespace Proxy.Tunnels
     {
         private const int BufferSize = 8192;
         private CancellationTokenSource _cancellationTokenSource;
-        private NetworkStream _host;
 
-        public TcpOneWayTunnel(NetworkStream host)
+        public TcpOneWayTunnel()
         {
-            _host = host;
-
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -25,10 +22,10 @@ namespace Proxy.Tunnels
             GC.SuppressFinalize(this);
         }
 
-        public async Task Run(NetworkStream client)
+        public async Task Run(NetworkStream destination, NetworkStream source)
         {
             await Task.WhenAny(
-                Tunnel(_host, client, _cancellationTokenSource.Token));
+                Tunnel(source, destination, _cancellationTokenSource.Token));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -39,12 +36,6 @@ namespace Proxy.Tunnels
                 {
                     _cancellationTokenSource.Dispose();
                     _cancellationTokenSource = null;
-                }
-
-                if (_host != null)
-                {
-                    _host.Dispose();
-                    _host = null;
                 }
             }
         }
