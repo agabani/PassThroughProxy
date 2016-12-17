@@ -16,17 +16,17 @@ Point your browser/system proxy settings to 127.0.0.1 port 8889
 ## Configuration
 Configuration can be found in the `config.json` file that comes packaged with the proxy.
 
-| Configuration Path       | Description                                      | type    | example      |
-|--------------------------|--------------------------------------------------|---------|--------------|
-| server.port              | Port the proxy will listen on                    | int     | 8889         |
-|                          |                                                  |         |              |
-| authentication.enabled   | Enable proxy authentication                      | bool    | false        |
-| authentication.username  | Username used to authenticate                    | string  | john.smith   |
-| authentication.password  | Password used to authenticate                    | string  | password123  |
-|                          |                                                  |         |              |
-| firewall.enabled         | Enables the firewall                             | bool    | true         |
-| firewall.rules[].pattern | Rule regex pattern to match against the hostname | string  | .*.bbc.co.uk |
-| firewall.rules[].action  | Action to take when hostname matches rule        | string  | deny         |
+| Configuration Path       | Description                                      | Type    | Example     |
+|--------------------------|--------------------------------------------------|---------|-------------|
+| server.port              | Port the proxy will listen on                    | int     | 8889        |
+|                          |                                                  |         |             |
+| authentication.enabled   | Enable proxy authentication                      | bool    | false       |
+| authentication.username  | Username used to authenticate                    | string  | john.smith  |
+| authentication.password  | Password used to authenticate                    | string  | password123 |
+|                          |                                                  |         |             |
+| firewall.enabled         | Enables the firewall                             | bool    | true        |
+| firewall.rules[].pattern | Rule regex pattern to match against the hostname | string  | .*bbc.co.uk |
+| firewall.rules[].action  | Action to take when hostname matches rule        | string  | deny        |
 
 ### Example
 
