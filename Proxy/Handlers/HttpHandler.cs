@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 using Proxy.Headers;
 using Proxy.Sessions;
@@ -76,7 +75,7 @@ namespace Proxy.Handlers
 
         private static async Task<HttpHeader> GetHeader(HttpHeader header, Stream stream)
         {
-            return header ?? await HttpHeaderStream.Instance().GetHeader(stream, CancellationToken.None);
+            return header ?? await HttpHeaderStream.Instance().GetHeader(stream);
         }
 
         private static async Task<int> ForwardHeader(HttpHeader httpHeader, Stream host)

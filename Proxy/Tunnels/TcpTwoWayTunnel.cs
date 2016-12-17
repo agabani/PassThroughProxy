@@ -10,14 +10,9 @@ namespace Proxy.Tunnels
     {
         private const int BufferSize = 8192;
         private CancellationTokenSource _cancellationTokenSource;
-        private NetworkStream _client;
-        private NetworkStream _host;
 
-        public TcpTwoWayTunnel(NetworkStream client, NetworkStream host)
+        public TcpTwoWayTunnel()
         {
-            _client = client;
-            _host = host;
-
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -27,11 +22,11 @@ namespace Proxy.Tunnels
             GC.SuppressFinalize(this);
         }
 
-        public async Task Run()
+        public async Task Run(NetworkStream client, NetworkStream host)
         {
             await Task.WhenAny(
-                Tunnel(_client, _host, _cancellationTokenSource.Token),
-                Tunnel(_host, _client, _cancellationTokenSource.Token));
+                Tunnel(client, host, _cancellationTokenSource.Token),
+                Tunnel(host, client, _cancellationTokenSource.Token));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -42,18 +37,6 @@ namespace Proxy.Tunnels
                 {
                     _cancellationTokenSource.Dispose();
                     _cancellationTokenSource = null;
-                }
-
-                if (_client != null)
-                {
-                    _client.Dispose();
-                    _client = null;
-                }
-
-                if (_host != null)
-                {
-                    _host.Dispose();
-                    _host = null;
                 }
             }
         }

@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Proxy.Headers
@@ -20,9 +19,9 @@ namespace Proxy.Headers
             return Self;
         }
 
-        public async Task<HttpHeader> GetHeader(Stream client, CancellationToken token)
+        public async Task<HttpHeader> GetHeader(Stream client)
         {
-            using (var memoryStream = await GetStream(client, token))
+            using (var memoryStream = await GetStream(client))
             {
                 var array = memoryStream.ToArray();
 
@@ -30,7 +29,7 @@ namespace Proxy.Headers
             }
         }
 
-        private static async Task<MemoryStream> GetStream(Stream client, CancellationToken token)
+        private static async Task<MemoryStream> GetStream(Stream client)
         {
             var memoryStream = new MemoryStream();
             var readBuffer = new byte[1];
@@ -40,8 +39,8 @@ namespace Proxy.Headers
 
             do
             {
-                bytesRead = await client.ReadAsync(readBuffer, 0, 1, token);
-                await memoryStream.WriteAsync(readBuffer, 0, bytesRead, token);
+                bytesRead = await client.ReadAsync(readBuffer, 0, 1);
+                await memoryStream.WriteAsync(readBuffer, 0, bytesRead);
 
                 counter = Encoding.ASCII.GetString(readBuffer) == Delimiter[counter] ? counter + 1 : 0;
 
@@ -49,7 +48,7 @@ namespace Proxy.Headers
                 {
                     return memoryStream;
                 }
-            } while (bytesRead > 0 && !token.IsCancellationRequested);
+            } while (bytesRead > 0);
 
             return memoryStream;
         }

@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Proxy.Headers;
 using Proxy.Sessions;
 
@@ -15,7 +14,7 @@ namespace Proxy.Handlers
 
         public async Task<HandlerResult> Run(SessionContext context)
         {
-            context.Header = await HttpHeaderStream.Instance().GetHeader(context.ClientStream, CancellationToken.None);
+            context.Header = await HttpHeaderStream.Instance().GetHeader(context.ClientStream);
 
             return context.Header != null ? HandlerResult.Initialized : HandlerResult.Terminated;
         }

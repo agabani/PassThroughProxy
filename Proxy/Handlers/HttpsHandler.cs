@@ -21,9 +21,9 @@ namespace Proxy.Handlers
                 return HandlerResult.NewHostRequired;
             }
 
-            using (var tunnel = new TcpTwoWayTunnel(context.ClientStream, context.HostStream))
+            using (var tunnel = new TcpTwoWayTunnel())
             {
-                var task = tunnel.Run();
+                var task = tunnel.Run(context.ClientStream, context.HostStream);
                 await SendConnectionEstablised(context.ClientStream);
                 await task;
             }
