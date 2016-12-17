@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Proxy.Configurations;
 using Proxy.Headers;
+using Proxy.Sessions;
 
-namespace Proxy.ProxyHandlerNext
+namespace Proxy.Handlers
 {
     public class AuthenticationHandler : IHandler
     {
-        public async Task<HandlerResult> Run(Context context)
+        public async Task<HandlerResult> Run(SessionContext context)
         {
             if (!IsAuthenticationRequired())
             {

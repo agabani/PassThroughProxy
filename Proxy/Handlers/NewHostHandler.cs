@@ -1,12 +1,13 @@
 ﻿using System.Net.Sockets;
 using System.Threading.Tasks;
 using Proxy.Headers;
+using Proxy.Sessions;
 
-namespace Proxy.ProxyHandlerNext
+namespace Proxy.Handlers
 {
     public class NewHostHandler : IHandler
     {
-        public async Task<HandlerResult> Run(Context context)
+        public async Task<HandlerResult> Run(SessionContext context)
         {
             context.RemoveHost();
 

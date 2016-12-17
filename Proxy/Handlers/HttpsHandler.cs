@@ -1,13 +1,14 @@
 ﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Proxy.Sessions;
 using Proxy.Tunnels;
 
-namespace Proxy.ProxyHandlerNext
+namespace Proxy.Handlers
 {
     public class HttpsHandler : IHandler
     {
-        public async Task<HandlerResult> Run(Context context)
+        public async Task<HandlerResult> Run(SessionContext context)
         {
             if (context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress))
             {

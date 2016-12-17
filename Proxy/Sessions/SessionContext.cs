@@ -3,11 +3,11 @@ using System.Net.Sockets;
 using Proxy.Headers;
 using Proxy.Network;
 
-namespace Proxy.ProxyHandlerNext
+namespace Proxy.Sessions
 {
-    public class Context : IDisposable
+    public class SessionContext : IDisposable
     {
-        public Context(TcpClient client)
+        public SessionContext(TcpClient client)
         {
             Client = client;
             ClientStream = client.GetStream();

@@ -3,15 +3,16 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Proxy.Headers;
+using Proxy.Sessions;
 using Proxy.Tunnels;
 
-namespace Proxy.ProxyHandlerNext
+namespace Proxy.Handlers
 {
     public class HttpHandler : IHandler
     {
         private const int BufferSize = 8192;
 
-        public async Task<HandlerResult> Run(Context context)
+        public async Task<HandlerResult> Run(SessionContext context)
         {
             if (IsNewHostRequired(context))
             {
@@ -51,9 +52,9 @@ namespace Proxy.ProxyHandlerNext
             return HandlerResult.Terminated;
         }
 
-        private static bool IsNewHostRequired(Context context)
+        private static bool IsNewHostRequired(SessionContext sessionContext)
         {
-            return context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress);
+            return sessionContext.CurrentHostAddress == null || !Equals(sessionContext.Header.Host, sessionContext.CurrentHostAddress);
         }
 
         private static TcpOneWayTunnel OneWayTunnel(NetworkStream source, NetworkStream destination)

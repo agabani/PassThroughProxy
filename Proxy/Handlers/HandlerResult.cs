@@ -1,4 +1,4 @@
-﻿namespace Proxy.ProxyHandlerNext
+﻿namespace Proxy.Handlers
 {
     public enum HandlerResult
     {

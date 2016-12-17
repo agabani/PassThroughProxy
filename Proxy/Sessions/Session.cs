@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Proxy.Handlers;
 
-namespace Proxy.ProxyHandlerNext
+namespace Proxy.Sessions
 {
     public class Session
     {
@@ -22,7 +23,7 @@ namespace Proxy.ProxyHandlerNext
         {
             var result = HandlerResult.Uninitialized;
 
-            using (var context = new Context(client))
+            using (var context = new SessionContext(client))
             {
                 do
                 {

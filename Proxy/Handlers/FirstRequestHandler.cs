@@ -1,12 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Proxy.Headers;
+using Proxy.Sessions;
 
-namespace Proxy.ProxyHandlerNext
+namespace Proxy.Handlers
 {
     public class FirstRequestHandler : IHandler
     {
-        public async Task<HandlerResult> Run(Context context)
+        public async Task<HandlerResult> Run(SessionContext context)
         {
             context.Header = await new HttpHeaderStream().GetHeader(context.ClientStream, CancellationToken.None);
 
