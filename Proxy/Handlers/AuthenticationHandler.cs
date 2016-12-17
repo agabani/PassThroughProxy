@@ -1,38 +1,41 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Proxy.Configurations;
 using Proxy.Headers;
-using Proxy.System;
+using Proxy.Sessions;
 
-namespace Proxy.ProxyHandlers
+namespace Proxy.Handlers
 {
-    public class ProxyAuthenticationHandler
+    public class AuthenticationHandler : IHandler
     {
-        public async Task<bool> Run(HttpHeader httpHeader, NetworkStream clientStream)
+        public async Task<HandlerResult> Run(SessionContext context)
         {
-            try
+            if (!IsAuthenticationRequired())
             {
-                if (!IsProxyAuthorizationHeaderPresent(httpHeader))
-                {
-                    await SendProxyAuthenticationRequired(clientStream);
-                    return false;
-                }
-
-                if (IsProxyAuthorizationCredentialsCorrect(httpHeader))
-                {
-                    return true;
-                }
-
-                await SendProxyAuthenticationInvalid(clientStream);
-                return false;
+                return HandlerResult.AuthenticationNotRequired;
             }
-            catch (SocketException)
+
+            if (!IsProxyAuthorizationHeaderPresent(context.Header))
             {
-                return false;
+                await SendProxyAuthenticationRequired(context.ClientStream);
+                return HandlerResult.Terminated;
             }
+
+            if (IsProxyAuthorizationCredentialsCorrect(context.Header))
+            {
+                return HandlerResult.Authenticated;
+            }
+
+            await SendProxyAuthenticationInvalid(context.ClientStream);
+            return HandlerResult.Terminated;
+        }
+
+        private static bool IsAuthenticationRequired()
+        {
+            return Configuration.Get().Authentication.Enabled;
         }
 
         private static bool IsProxyAuthorizationHeaderPresent(HttpHeader httpHeader)
@@ -49,7 +52,7 @@ namespace Proxy.ProxyHandlers
                 .Substring(key.Length)
                 .Trim();
 
-            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{Configuration.AuthenticationUsername}:{Configuration.AuthenticationPassword}";
+            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{Configuration.Get().Authentication.Username}:{Configuration.Get().Authentication.Password}";
         }
 
         private static async Task SendProxyAuthenticationRequired(Stream stream)

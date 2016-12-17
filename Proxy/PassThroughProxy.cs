@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Threading;
 using Proxy.Listeners;
-using Proxy.ProxyHandlers;
+using Proxy.Sessions;
 
 namespace Proxy
 {
@@ -12,7 +12,7 @@ namespace Proxy
 
         public PassThroughProxy(int listenPort)
         {
-            Action<TcpClient, CancellationToken> handleClient = async (client, token) => await new ProxyHandler().Run(client);
+            Action<TcpClient, CancellationToken> handleClient = async (client, token) => await new Session().Run(client);
 
             _proxyListener = new ProxyListener(listenPort, handleClient);
         }

@@ -1,0 +1,23 @@
+﻿{
+  "server": {
+    "port": 8889
+  },
+  "authentication": {
+    "enabled": false,
+    "username": "username",
+    "password": "password"
+  },
+  "firewall": {
+    "enabled": true,
+    "rules": [
+      {
+        "pattern": ".*reddit.com",
+        "action": "allow"
+      },
+      {
+        "pattern": ".*bbc.co.uk",
+        "action": "deny"
+      }
+    ]
+  }
+}
