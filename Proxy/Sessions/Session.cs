@@ -15,7 +15,8 @@ namespace Proxy.Sessions
             {HandlerResult.AuthenticationNotRequired, new ProxyTypeHandler()},
             {HandlerResult.Http, new HttpHandler()},
             {HandlerResult.Https, new HttpsHandler()},
-            {HandlerResult.NewHostRequired, new NewHostHandler()},
+            {HandlerResult.NewHostRequired, new FirewallHandler()},
+            {HandlerResult.NewHostConnectionRequired, new NewHostHandler()},
             {HandlerResult.Connected, new ProxyTypeHandler()}
         };
 

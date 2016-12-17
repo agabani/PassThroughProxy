@@ -5,6 +5,7 @@
         Uninitialized,
         Initialized,
         NewHostRequired,
+        NewHostConnectionRequired,
         Connected,
         Authenticated,
         AuthenticationNotRequired,

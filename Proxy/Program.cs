@@ -21,7 +21,10 @@ namespace Proxy
 
             using (new PassThroughProxy(port))
             {
-                Console.WriteLine($"Proxy is running. Listening on port {port}. Authentication is {(Configuration.Get().Authentication.Enabled ? "enabled" : "disabled")}.");
+                Console.WriteLine($"Proxy is running." +
+                                  $" Listening on port {port}." +
+                                  $" Authentication is {(Configuration.Get().Authentication.Enabled ? "enabled" : "disabled")}." +
+                                  $" Firewall is {(Configuration.Get().Firewall.Enabled ? "enabled" : "disabled")}.");
                 while (true)
                 {
                     await Task.Delay(1000);

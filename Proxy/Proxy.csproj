@@ -44,6 +44,7 @@
     <Compile Include="Configurations\Firewall.cs" />
     <Compile Include="Configurations\Rule.cs" />
     <Compile Include="Configurations\Server.cs" />
+    <Compile Include="Handlers\FirewallHandler.cs" />
     <Compile Include="Network\Address.cs" />
     <Compile Include="Headers\HttpHeader.cs" />
     <Compile Include="Headers\HttpHeaderStream.cs" />
