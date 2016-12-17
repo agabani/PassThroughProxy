@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,17 +13,14 @@ namespace Proxy.ProxyHandlerNext
 
         public async Task<HandlerResult> Run(Context context)
         {
-            if (context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress))
+            if (IsNewHostRequired(context))
             {
                 return HandlerResult.NewHostRequired;
             }
 
-            var buffer = new byte[BufferSize];
-
-            var oneWayTunnel = Tunnel(context.HostStream, context.ClientStream);
-
-            try
+            using (OneWayTunnel(context.HostStream, context.ClientStream))
             {
+                var buffer = new byte[BufferSize];
                 int bytesRead;
 
                 do
@@ -36,10 +32,8 @@ namespace Proxy.ProxyHandlerNext
                         return HandlerResult.Terminated;
                     }
 
-                    if (context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress))
+                    if (IsNewHostRequired(context))
                     {
-                        TerminateHost(oneWayTunnel);
-
                         return HandlerResult.NewHostRequired;
                     }
 
@@ -53,37 +47,28 @@ namespace Proxy.ProxyHandlerNext
                     context.Header = null;
                 } while (bytesRead > 0);
             }
-            finally
-            {
-                TerminateHost(oneWayTunnel);
-            }
 
             return HandlerResult.Terminated;
         }
 
-        private static async Task<HttpHeader> GetHeader(HttpHeader header, NetworkStream stream)
+        private static bool IsNewHostRequired(Context context)
         {
-            return header ?? await new HttpHeaderStream().GetHeader(stream, CancellationToken.None);
+            return context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress);
         }
 
-        private static void TerminateHost(params IDisposable[] objects)
-        {
-            foreach (var disposable in objects)
-            {
-                using (disposable)
-                {
-                }
-            }
-        }
-
-        private static TcpOneWayTunnel Tunnel(NetworkStream source, NetworkStream destination)
+        private static TcpOneWayTunnel OneWayTunnel(NetworkStream source, NetworkStream destination)
         {
             var tunnel = new TcpOneWayTunnel();
             tunnel.Run(destination, source).GetAwaiter();
             return tunnel;
         }
 
-        private static async Task<int> ForwardHeader(HttpHeader httpHeader, NetworkStream host)
+        private static async Task<HttpHeader> GetHeader(HttpHeader header, Stream stream)
+        {
+            return header ?? await new HttpHeaderStream().GetHeader(stream, CancellationToken.None);
+        }
+
+        private static async Task<int> ForwardHeader(HttpHeader httpHeader, Stream host)
         {
             await host.WriteAsync(httpHeader.Array, 0, httpHeader.Array.Length);
             return httpHeader.Array.Length;
