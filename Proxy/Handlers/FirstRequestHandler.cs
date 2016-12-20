@@ -12,11 +12,11 @@ namespace Proxy.Handlers
         {
         }
 
-        public async Task<HandlerResult> Run(SessionContext context)
+        public async Task<ExitReason> Run(SessionContext context)
         {
             context.Header = await HttpHeaderStream.Instance().GetHeader(context.ClientStream);
 
-            return context.Header != null ? HandlerResult.Initialized : HandlerResult.Terminated;
+            return context.Header != null ? ExitReason.Initialized : ExitReason.TerminationRequired;
         }
 
         public static FirstRequestHandler Instance()

@@ -7,22 +7,22 @@ namespace Proxy.Sessions
 {
     public class Session
     {
-        private static readonly Dictionary<HandlerResult, IHandler> Handlers = new Dictionary<HandlerResult, IHandler>
+        private static readonly Dictionary<ExitReason, IHandler> Handlers = new Dictionary<ExitReason, IHandler>
         {
-            {HandlerResult.Uninitialized, FirstRequestHandler.Instance()},
-            {HandlerResult.Initialized, AuthenticationHandler.Instance()},
-            {HandlerResult.Authenticated, ProxyTypeHandler.Instance()},
-            {HandlerResult.AuthenticationNotRequired, ProxyTypeHandler.Instance()},
-            {HandlerResult.Http, HttpHandler.Instance()},
-            {HandlerResult.Https, HttpsHandler.Instance()},
-            {HandlerResult.NewHostRequired, FirewallHandler.Instance()},
-            {HandlerResult.NewHostConnectionRequired, NewHostHandler.Instance()},
-            {HandlerResult.Connected, ProxyTypeHandler.Instance()}
+            {ExitReason.InitializationRequired, FirstRequestHandler.Instance()},
+            {ExitReason.Initialized, AuthenticationHandler.Instance()},
+            {ExitReason.Authenticated, ProxyTypeHandler.Instance()},
+            {ExitReason.AuthenticationNotRequired, ProxyTypeHandler.Instance()},
+            {ExitReason.HttpProxyRequired, HttpProxyHandler.Instance()},
+            {ExitReason.HttpsTunnelRequired, HttpsTunnelHandler.Instance()},
+            {ExitReason.NewHostRequired, FirewallHandler.Instance()},
+            {ExitReason.NewHostConnectionRequired, NewHostHandler.Instance()},
+            {ExitReason.NewHostConnected, ProxyTypeHandler.Instance()}
         };
 
         public async Task Run(TcpClient client)
         {
-            var result = HandlerResult.Uninitialized;
+            var result = ExitReason.InitializationRequired;
 
             using (var context = new SessionContext(client))
             {
@@ -34,9 +34,9 @@ namespace Proxy.Sessions
                     }
                     catch (SocketException)
                     {
-                        result = HandlerResult.Terminated;
+                        result = ExitReason.TerminationRequired;
                     }
-                } while (result != HandlerResult.Terminated);
+                } while (result != ExitReason.TerminationRequired);
             }
         }
     }

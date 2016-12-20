@@ -17,26 +17,26 @@ namespace Proxy.Handlers
         {
         }
 
-        public async Task<HandlerResult> Run(SessionContext context)
+        public async Task<ExitReason> Run(SessionContext context)
         {
             if (!IsAuthenticationRequired())
             {
-                return HandlerResult.AuthenticationNotRequired;
+                return ExitReason.AuthenticationNotRequired;
             }
 
             if (!IsProxyAuthorizationHeaderPresent(context.Header))
             {
                 await SendProxyAuthenticationRequired(context.ClientStream);
-                return HandlerResult.Terminated;
+                return ExitReason.TerminationRequired;
             }
 
             if (IsProxyAuthorizationCredentialsCorrect(context.Header))
             {
-                return HandlerResult.Authenticated;
+                return ExitReason.Authenticated;
             }
 
             await SendProxyAuthenticationInvalid(context.ClientStream);
-            return HandlerResult.Terminated;
+            return ExitReason.TerminationRequired;
         }
 
         public static AuthenticationHandler Instance()

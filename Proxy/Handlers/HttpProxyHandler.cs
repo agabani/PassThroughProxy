@@ -7,20 +7,20 @@ using Proxy.Tunnels;
 
 namespace Proxy.Handlers
 {
-    public class HttpHandler : IHandler
+    public class HttpProxyHandler : IHandler
     {
         private const int BufferSize = 8192;
-        private static readonly HttpHandler Self = new HttpHandler();
+        private static readonly HttpProxyHandler Self = new HttpProxyHandler();
 
-        private HttpHandler()
+        private HttpProxyHandler()
         {
         }
 
-        public async Task<HandlerResult> Run(SessionContext context)
+        public async Task<ExitReason> Run(SessionContext context)
         {
             if (IsNewHostRequired(context))
             {
-                return HandlerResult.NewHostRequired;
+                return ExitReason.NewHostRequired;
             }
 
             using (OneWayTunnel(context.HostStream, context.ClientStream))
@@ -34,12 +34,12 @@ namespace Proxy.Handlers
 
                     if (context.Header == null)
                     {
-                        return HandlerResult.Terminated;
+                        return ExitReason.TerminationRequired;
                     }
 
                     if (IsNewHostRequired(context))
                     {
-                        return HandlerResult.NewHostRequired;
+                        return ExitReason.NewHostRequired;
                     }
 
                     bytesRead = await ForwardHeader(context.Header, context.HostStream);
@@ -53,10 +53,10 @@ namespace Proxy.Handlers
                 } while (bytesRead > 0);
             }
 
-            return HandlerResult.Terminated;
+            return ExitReason.TerminationRequired;
         }
 
-        public static HttpHandler Instance()
+        public static HttpProxyHandler Instance()
         {
             return Self;
         }

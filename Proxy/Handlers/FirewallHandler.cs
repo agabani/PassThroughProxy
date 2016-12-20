@@ -13,16 +13,16 @@ namespace Proxy.Handlers
         {
         }
 
-        public Task<HandlerResult> Run(SessionContext context)
+        public Task<ExitReason> Run(SessionContext context)
         {
             if (!Configuration.Settings.Firewall.Enabled)
             {
-                return Task.FromResult(HandlerResult.NewHostConnectionRequired);
+                return Task.FromResult(ExitReason.NewHostConnectionRequired);
             }
 
             return IsAllowed(context)
-                ? Task.FromResult(HandlerResult.NewHostConnectionRequired)
-                : Task.FromResult(HandlerResult.Terminated);
+                ? Task.FromResult(ExitReason.NewHostConnectionRequired)
+                : Task.FromResult(ExitReason.TerminationRequired);
         }
 
         public static FirewallHandler Instance()

@@ -53,13 +53,13 @@
     <Compile Include="Handlers\AuthenticationHandler.cs" />
     <Compile Include="Sessions\SessionContext.cs" />
     <Compile Include="Handlers\FirstRequestHandler.cs" />
-    <Compile Include="Handlers\HandlerResult.cs" />
-    <Compile Include="Handlers\HttpHandler.cs" />
+    <Compile Include="Handlers\ExitReason.cs" />
+    <Compile Include="Handlers\HttpProxyHandler.cs" />
     <Compile Include="Handlers\IHandler.cs" />
     <Compile Include="Handlers\NewHostHandler.cs" />
     <Compile Include="Handlers\ProxyTypeHandler.cs" />
     <Compile Include="Sessions\Session.cs" />
-    <Compile Include="Handlers\HttpsHandler.cs" />
+    <Compile Include="Handlers\HttpsTunnelHandler.cs" />
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Tunnels\TcpOneWayTunnel.cs" />
     <Compile Include="Tunnels\TcpTwoWayTunnel.cs" />

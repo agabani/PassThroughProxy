@@ -5,6 +5,6 @@ namespace Proxy.Handlers
 {
     public interface IHandler
     {
-        Task<HandlerResult> Run(SessionContext context);
+        Task<ExitReason> Run(SessionContext context);
     }
 }

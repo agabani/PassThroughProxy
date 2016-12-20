@@ -1,16 +1,16 @@
 ﻿namespace Proxy.Handlers
 {
-    public enum HandlerResult
+    public enum ExitReason
     {
-        Uninitialized,
+        InitializationRequired,
         Initialized,
         NewHostRequired,
         NewHostConnectionRequired,
-        Connected,
+        NewHostConnected,
         Authenticated,
         AuthenticationNotRequired,
-        Http,
-        Https,
-        Terminated
+        HttpProxyRequired,
+        HttpsTunnelRequired,
+        TerminationRequired
     }
 }

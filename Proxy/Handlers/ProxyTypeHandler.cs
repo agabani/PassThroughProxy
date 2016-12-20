@@ -11,9 +11,9 @@ namespace Proxy.Handlers
         {
         }
 
-        public Task<HandlerResult> Run(SessionContext context)
+        public Task<ExitReason> Run(SessionContext context)
         {
-            return Task.FromResult(context.Header.Verb == "CONNECT" ? HandlerResult.Https : HandlerResult.Http);
+            return Task.FromResult(context.Header.Verb == "CONNECT" ? ExitReason.HttpsTunnelRequired : ExitReason.HttpProxyRequired);
         }
 
         public static ProxyTypeHandler Instance()

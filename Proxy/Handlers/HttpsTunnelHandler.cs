@@ -6,19 +6,19 @@ using Proxy.Tunnels;
 
 namespace Proxy.Handlers
 {
-    public class HttpsHandler : IHandler
+    public class HttpsTunnelHandler : IHandler
     {
-        private static readonly HttpsHandler Self = new HttpsHandler();
+        private static readonly HttpsTunnelHandler Self = new HttpsTunnelHandler();
 
-        private HttpsHandler()
+        private HttpsTunnelHandler()
         {
         }
 
-        public async Task<HandlerResult> Run(SessionContext context)
+        public async Task<ExitReason> Run(SessionContext context)
         {
             if (context.CurrentHostAddress == null || !Equals(context.Header.Host, context.CurrentHostAddress))
             {
-                return HandlerResult.NewHostRequired;
+                return ExitReason.NewHostRequired;
             }
 
             using (var tunnel = new TcpTwoWayTunnel())
@@ -28,10 +28,10 @@ namespace Proxy.Handlers
                 await task;
             }
 
-            return HandlerResult.Terminated;
+            return ExitReason.TerminationRequired;
         }
 
-        public static HttpsHandler Instance()
+        public static HttpsTunnelHandler Instance()
         {
             return Self;
         }
