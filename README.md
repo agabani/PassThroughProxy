@@ -30,7 +30,7 @@ Configuration can be found in the `config.json` file that comes packaged with th
 
 ### Example
 
-```
+```json
 {
   "server": {
     "port": 8889
