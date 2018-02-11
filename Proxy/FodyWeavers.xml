@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers>
-	<Costura IncludeAssemblies="Newtonsoft.Json"/>
-  
+  <Costura IncludeDebugSymbols="false">
+    <IncludeAssemblies>
+      Newtonsoft.Json
+      PassThroughProxy
+    </IncludeAssemblies>
+  </Costura>
 </Weavers>
