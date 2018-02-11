@@ -8,12 +8,12 @@ namespace Proxy
     {
         private static void Main()
         {
-            MainAsync().Wait();
+            MainAsync().GetAwaiter().GetResult();
         }
 
         private static async Task MainAsync()
         {
-            using (new PassThroughProxy(Configuration.Settings.Server.Port))
+            using (new PassThroughProxy(Configuration.Settings.Server.Port, Configuration.Settings))
             {
                 Console.WriteLine("Proxy is running." +
                                   $" Listening on port {Configuration.Settings.Server.Port}." +

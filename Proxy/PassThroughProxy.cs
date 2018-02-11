@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+using Proxy.Configurations;
 using Proxy.Listeners;
 using Proxy.Sessions;
 
@@ -10,9 +11,18 @@ namespace Proxy
     {
         private ProxyListener _proxyListener;
 
-        public PassThroughProxy(int listenPort)
+        public PassThroughProxy(int listenPort) : this(listenPort, Configuration.Settings)
         {
-            Action<TcpClient, CancellationToken> handleClient = async (client, token) => await new Session().Run(client);
+        }
+
+        public PassThroughProxy(Configuration configuration) : this(configuration.Server.Port, configuration)
+        {
+        }
+
+        public PassThroughProxy(int listenPort, Configuration configuration)
+        {
+            Action<TcpClient, CancellationToken> handleClient =
+                async (client, token) => await new Session().Run(client, configuration);
 
             _proxyListener = new ProxyListener(listenPort, handleClient);
         }

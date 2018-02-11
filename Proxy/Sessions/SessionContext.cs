@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using Proxy.Configurations;
 using Proxy.Headers;
 using Proxy.Network;
 
@@ -7,11 +8,14 @@ namespace Proxy.Sessions
 {
     public class SessionContext : IDisposable
     {
-        public SessionContext(TcpClient client)
+        public SessionContext(TcpClient client, Configuration configuration)
         {
+            Configuration = configuration;
             Client = client;
             ClientStream = client.GetStream();
         }
+
+        public Configuration Configuration { get; private set; }
 
         public HttpHeader Header { get; set; }
 

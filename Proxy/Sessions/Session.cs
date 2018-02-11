@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Proxy.Configurations;
 using Proxy.Handlers;
 
 namespace Proxy.Sessions
@@ -20,11 +21,11 @@ namespace Proxy.Sessions
             {ExitReason.NewHostConnected, ProxyTypeHandler.Instance()}
         };
 
-        public async Task Run(TcpClient client)
+        public async Task Run(TcpClient client, Configuration configuration)
         {
             var result = ExitReason.InitializationRequired;
 
-            using (var context = new SessionContext(client))
+            using (var context = new SessionContext(client, configuration))
             {
                 do
                 {

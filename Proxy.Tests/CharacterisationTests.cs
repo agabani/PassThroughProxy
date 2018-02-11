@@ -15,7 +15,7 @@ namespace Proxy.Tests
         [SetUp]
         public void SetUp()
         {
-            _proxy = new PassThroughProxy(ProxyPort);
+            _proxy = new PassThroughProxy(ProxyPort, Configuration.Settings);
             _server = new HttpStubServer(_serverBaseAddress);
             _client = new HttpClient(_handler = new HttpClientHandler
             {

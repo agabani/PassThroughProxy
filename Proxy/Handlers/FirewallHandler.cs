@@ -15,7 +15,7 @@ namespace Proxy.Handlers
 
         public Task<ExitReason> Run(SessionContext context)
         {
-            if (!Configuration.Settings.Firewall.Enabled)
+            if (!context.Configuration.Firewall.Enabled)
             {
                 return Task.FromResult(ExitReason.NewHostConnectionRequired);
             }
@@ -32,7 +32,7 @@ namespace Proxy.Handlers
 
         private static bool IsAllowed(SessionContext context)
         {
-            return !Configuration.Settings.Firewall.Rules
+            return !context.Configuration.Firewall.Rules
                 .Any(r => r.Pattern.Match(context.Header.Host.Hostname).Success &&
                           r.Action == ActionEnum.Deny);
         }
