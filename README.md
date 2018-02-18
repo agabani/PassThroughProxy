@@ -2,6 +2,8 @@
 
 > Forward proxy server.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/c6gnmw6xkt6j8e2s?svg=true)](https://ci.appveyor.com/project/AhmedAgabani/passthroughproxy)
+
 ## Usage
 
 Double click `Proxy.exe` or run from command line.
