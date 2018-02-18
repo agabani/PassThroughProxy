@@ -19,7 +19,7 @@ namespace Proxy.Handlers
 
         public async Task<ExitReason> Run(SessionContext context)
         {
-            if (!IsAuthenticationRequired())
+            if (!IsAuthenticationRequired(context))
             {
                 return ExitReason.AuthenticationNotRequired;
             }
@@ -30,7 +30,7 @@ namespace Proxy.Handlers
                 return ExitReason.TerminationRequired;
             }
 
-            if (IsProxyAuthorizationCredentialsCorrect(context.Header))
+            if (IsProxyAuthorizationCredentialsCorrect(context))
             {
                 return ExitReason.Authenticated;
             }
@@ -44,9 +44,9 @@ namespace Proxy.Handlers
             return Self;
         }
 
-        private static bool IsAuthenticationRequired()
+        private static bool IsAuthenticationRequired(SessionContext context)
         {
-            return Configuration.Settings.Authentication.Enabled;
+            return context.Configuration.Authentication.Enabled;
         }
 
         private static bool IsProxyAuthorizationHeaderPresent(HttpHeader httpHeader)
@@ -54,16 +54,16 @@ namespace Proxy.Handlers
             return httpHeader.ArrayList.Any(@string => @string.StartsWith("Proxy-Authorization: Basic", StringComparison.OrdinalIgnoreCase));
         }
 
-        private static bool IsProxyAuthorizationCredentialsCorrect(HttpHeader httpHeader)
+        private static bool IsProxyAuthorizationCredentialsCorrect(SessionContext context)
         {
             const string key = "Proxy-Authorization: Basic";
 
-            var value = httpHeader.ArrayList
+            var value = context.Header.ArrayList
                 .First(@string => @string.StartsWith(key, StringComparison.OrdinalIgnoreCase))
                 .Substring(key.Length)
                 .Trim();
 
-            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{Configuration.Settings.Authentication.Username}:{Configuration.Settings.Authentication.Password}";
+            return Encoding.ASCII.GetString(Convert.FromBase64String(value)) == $"{context.Configuration.Authentication.Username}:{context.Configuration.Authentication.Password}";
         }
 
         private static async Task SendProxyAuthenticationRequired(Stream stream)
