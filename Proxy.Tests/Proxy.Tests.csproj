@@ -62,6 +62,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PassThroughProxy\PassThroughProxy.csproj">
+      <Project>{ca8b3796-2ef6-4688-9c43-916079f7cd99}</Project>
+      <Name>PassThroughProxy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Proxy\Proxy.csproj">
       <Project>{d0fcfdc9-21cd-4c70-bc77-53b327ed7f20}</Project>
       <Name>Proxy</Name>

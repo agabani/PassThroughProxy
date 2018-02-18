@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy", "Proxy\Proxy.csproj", "{D0FCFDC9-21CD-4C70-BC77-53B327ED7F20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy.Tests", "Proxy.Tests\Proxy.Tests.csproj", "{2A7806A9-4E4D-41C0-B8DD-3D4ACBE1120A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PassThroughProxy", "PassThroughProxy\PassThroughProxy.csproj", "{CA8B3796-2EF6-4688-9C43-916079F7CD99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +23,15 @@ Global
 		{2A7806A9-4E4D-41C0-B8DD-3D4ACBE1120A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A7806A9-4E4D-41C0-B8DD-3D4ACBE1120A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A7806A9-4E4D-41C0-B8DD-3D4ACBE1120A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA8B3796-2EF6-4688-9C43-916079F7CD99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA8B3796-2EF6-4688-9C43-916079F7CD99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA8B3796-2EF6-4688-9C43-916079F7CD99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA8B3796-2EF6-4688-9C43-916079F7CD99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {338E1093-265E-4CA2-875E-A73C08C7AB81}
 	EndGlobalSection
 EndGlobal
