@@ -47,7 +47,7 @@ namespace Proxy.Headers
             return Encoding.ASCII.GetBytes(builder.ToString());
         }
 
-        private static Address GetAddress(IEnumerable<string> strings)
+        private static Address GetAddress(string[] strings)
         {
             const string key = "host:";
 
@@ -60,7 +60,7 @@ namespace Proxy.Headers
             switch (split.Length)
             {
                 case 1:
-                    return new Address(split[0], 80);
+                    return new Address(split[0], GetVerb(strings) == "CONNECT" ? 443 : 80);
                 case 2:
                     return new Address(split[0], int.Parse(split[1]));
                 default:
